@@ -1,7 +1,7 @@
 ---
 layout: post
 title: ! 'Avoiding duplicate records with AWS KCL and S3: Exactly once record processing of Kinesis Data Streams (1/2)'
-date: 2020-01-29 20:00:00 -0000
+tags: [aws, kcl, s3, dotnet]
 featured_image_thumbnail: assets/images/posts/2020/01_tn.jpg
 featured_image: assets/images/posts/2020/01.jpg
 ---
