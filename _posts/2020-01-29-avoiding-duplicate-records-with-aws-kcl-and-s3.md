@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ! 'Avoiding duplicate records with AWS KCL and S3: Exactly once record processing of Kinesis Data Streams'
+title: ! 'Avoiding duplicate records with AWS KCL and S3: Exactly once record processing of Kinesis Data Streams (1/2)'
 date: 2020-01-29 20:00:00 -0000
 ---
 
@@ -526,4 +526,4 @@ public class S3SequenceStore : ISequenceStore
 7. Also it is important to disable deduplication once there are no more duplicate records found using `_deduplicator.DisableDeduplication();`.  This means that the records are fresh and no more deduplication needs to be done. When the consumer app starts, deduplication needs to be enabled by default to check if the app crashed unexpectedly the last time leaving duplicate records to be processed.
 
 ## Summary
-In summary, we introduced a way to filter out duplicate record using the class `SequenceRange` and by storing record batches in such a way that their keys are alway determinstic. We did this every time app starts, to make sure if in case any checkpoiting failed during the last app shutdown. I know I could have simply pacakged all this into a library and given you a one line usage, but whats the fun in that ?
+In summary, we introduced a way to filter out duplicate record using the class `SequenceRange` and by storing record batches in such a way that their keys are alway determinstic. We did this every time app starts, to make sure if in case any checkpoiting failed during the last app shutdown. ~~I know I could have simply pacakged all this into a library and given you a one liner usage, but whats the fun in that ?~~ Actually scratch that, I will be making a part 2 of this where I will package all this into a Nuget library and provide a easier usage to do the same thing.
