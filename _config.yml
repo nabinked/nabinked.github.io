@@ -1,0 +1,84 @@
+# Site setings
+name: "The strongly typed blog"
+description: "Bloggin stuff about random programming stuff"
+meta_description: "The strongly typed blog."
+# logo: "assets/images/bloglogo.png"
+favicon: "assets/images/favicon.ico"
+baseurl:
+production_url:
+disqus: "nabinked"
+mailchimp_url:
+cover_image: bc_1.jpg
+# Add your GA Tracking Id
+ga_analytics: "UA-157366379-1"
+
+# Author
+author:
+  name: "Nabin Karki Thapa"
+  image: "nabinkarkithapa.PNG"
+  greetings: "Hello world!"
+  description: "Software developer from Nepal, currently making his living in Sydney."
+  bio: "Born in a remote village of Gulmi, Nepal, I some how managed to self teach myself programming and I try to blog about it when I can."
+
+# Contact form setings
+email: nabin@outlook.com
+contact_page_description: "Contact me"
+thankyou_page_description: "Thank you for your message!"
+
+# Social links
+twitter: "nabinked"
+facebook: "nabinked"
+github: "nabinked"
+codepen:
+dribbble:
+medium:
+instagram: "nabinked"
+pinterest:
+linkedin: "nabinked"
+producthunt: ""
+
+# Navigation
+navigation:
+  - text: About
+    url: /about
+  # - text: Style Guide
+  #   url: /style-guide/
+  - text: Contact Me
+    url: /contact
+
+# Required Plugins
+plugins:
+  - jekyll-paginate
+  - jekyll-tagsgenerator
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Pagination
+paginate: 5
+paginate_path: /page:num/
+
+# Permalinks
+permalink: /:title
+
+# Jekyll 3 now only supports Kramdown for Markdown
+kramdown:
+  # Use GitHub flavored markdown, including triple backtick fenced code blocks
+  input: GFM
+  # Jekyll 3 and GitHub Pages now only support rouge for syntax highlighting
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    # Use existing pygments syntax highlighting css
+    css_class: "highlight"
+
+# Sass
+sass:
+  sass_dir: _sass
+  style: compressed
+
+# Exclude these files from your production _site
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE
+  - README.md
+  - CNAME
