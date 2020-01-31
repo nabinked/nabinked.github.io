@@ -941,9 +941,6 @@
   .post-full .post-thumbnail,
   .post-featured .post-thumbnail,
   .post-content img[src$='#wide'] {
-    margin-left: calc(360px - 47vw);
-    margin-right: calc(360px - 47vw);
-    max-width: none;
     width: 94vw;
   }
 }
@@ -961,11 +958,7 @@
   .post-full .post-thumbnail,
   .post-featured .post-thumbnail,
   .post-content img[src$='#wide'] {
-    margin-left: -180px;
-    margin-right: -180px;
-    max-width: none;
     width: 100%;
-    margin: 0 auto;
   }
 
   .outer {
