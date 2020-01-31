@@ -1,48 +1,46 @@
 /**
- * Main JS file for Horace behaviours
+ * Main JS file for theme behaviours
  */
-(function ($) {
+(function () {
 	"use strict";
-
-	var $body = $('body');
-
-	$(document).ready(function(){
-
-		// Responsive video embeds
-		$('.post-content').fitVids();
-
+	document.addEventListener('DOMContentLoaded', function () {
 		// Scroll to top
-		$('#top-button').on('click', function(e) {
-			$('html, body').animate({
-				'scrollTop': 0
+		document.getElementById('top-button').addEventListener('click', function (e) {
+			skrollTop.scrollTo({
+				to: 0
 			});
 			e.preventDefault();
 		});
-		
+
 		// Sidebar
-		$('#sidebar-show, #sidebar-hide').on('click', function(e){
-			$body.toggleClass('sidebar--opened');
-			$(this).blur();
-			e.preventDefault();
+		document.querySelectorAll('#sidebar-show, #sidebar-hide').forEach(function (el) {
+			el.addEventListener('click', function (e) {
+				document.body.classList.toggle('sidebar--opened');
+				this.blur();
+				e.preventDefault();
+			})
 		});
-		$('#site-overlay').on('click', function(e){
-			$body.removeClass('sidebar--opened');
+
+		document.getElementById('site-overlay').addEventListener('click', function (e) {
+			document.body.classList.remove('sidebar--opened');
 			e.preventDefault();
 		});
 
 		// Show comments
-		var interval = setInterval(function() {
-			var disqusHeight = $('#disqus_thread').height();
-			if ( disqusHeight > 100 ) {
-				$('#comments-area').addClass('comments--loaded');
+		var interval = setInterval(function () {
+			var disqusHeight = document.getElementById('disqus_thread').offsetHeight;
+			if (disqusHeight > 100) {
+				document.getElementById('comments-area').classList.add('comments--loaded');
 				clearInterval(interval);
 			}
 		}, 100);
-		$('#comments-overlay, #comments-show').on('click', function(e){
-			$('#comments-area').removeClass('comments--loaded').addClass('comments--opened');
-			e.preventDefault();
+
+		document.querySelectorAll('#comments-overlay, #comments-show').forEach(function (el) {
+			el.addEventListener('click', function (e) {
+				document.getElementById('comments-area').classList.remove('comments--loaded');
+				document.getElementById('comments-area').classList.add('comments--opened');
+				e.preventDefault();
+			});
 		});
-
 	});
-
-}(jQuery));
+}());
