@@ -1,3 +1,6 @@
+---
+# this must be present https://stackoverflow.com/questions/53638446/jekyll-seo-tag-doesnt-work-within-github-pages
+---
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,11 +10,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {% if site.plugins_dir contains 'jekyll-seo-tag' %}
-        {% include head-seo.html %}
+    {% include head-seo.html %}
     {% else %}
-        <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.name | escape }}{% endif %}</title>
-        <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
-        <link rel="canonical" href="{{ page.url | replace:'index.html', '' | absolute_url }}">
+    <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.name | escape }}{% endif %}</title>
+    <meta name="description"
+        content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
+    <link rel="canonical" href="{{ page.url | replace:'index.html', '' | absolute_url }}">
     {% endif %}
 
     <!-- Site Favicon -->
@@ -34,7 +38,8 @@
 
         <div class="hero-wrap">
             {% if site.cover_image %}
-            <div class="hero-wrap-bg" style="background-image: url({{ site.baseurl }}/assets/images/{{ site.cover_image }})"></div>
+            <div class="hero-wrap-bg"
+                style="background-image: url({{ site.baseurl }}/assets/images/{{ site.cover_image }})"></div>
             {% endif %}
             {% include header.html %}
             <section class="hero outer fadeInDown delay_075s">
