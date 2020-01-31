@@ -1,7 +1,3 @@
----
-some: thing
-# this must be present https://stackoverflow.com/questions/53638446/jekyll-seo-tag-doesnt-work-within-github-pages
----
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,9 +5,7 @@ some: thing
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    {% include head-seo.html %}
-
+    
     {% if site.plugins_dir contains 'jekyll-seo-tag' %}
     {% include head-seo.html %}
     {% else %}
