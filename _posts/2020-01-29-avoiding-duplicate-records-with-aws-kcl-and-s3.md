@@ -2,9 +2,9 @@
 layout: post
 title: ! 'Avoiding duplicate records with AWS KCL and S3: Exactly once record processing of Kinesis Data Streams (1/2)'
 tags: [aws, kcl, s3, dotnet]
-featured_image: assets/images/posts/2020/01/29/01.jpg
-featured_image_thumbnail: assets/images/posts/2020/01/29/01_tn.jpg
-image: assets/images/posts/2020/01/29/01_tn.jpg
+featured_image: assets/images/posts/2020/01/29/01.jpg?1
+featured_image_thumbnail: assets/images/posts/2020/01/29/01_tn.jpg?1
+image: assets/images/posts/2020/01/29/01_tn.jpg?1
 ---
 
 If you have managed to find this article, it is fair to assume that you are trying to decide a strategy to avoid processing duplicate records from Kinesis Data Streams using KCL and have a fair understanding of how KCL works. In this post, I will explain how we can implement a design, which will allow us to achieve "Exactly once" kinesis record processing and hence avoid duplicates.
