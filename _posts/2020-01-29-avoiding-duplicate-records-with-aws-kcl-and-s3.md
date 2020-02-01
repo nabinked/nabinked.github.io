@@ -77,7 +77,7 @@ void ProcessAndSaveToS3(string batchKey, IEnumerable<Records> records)
 }
 ```
 The second function `DeduplicateRecords` is where most of the heavy lifting is happening. 
-1. In the first line of the dfunction,
+1. In the first line of the function,
 
 `foreach (var group in allRecords.GroupByMinutes())`
 

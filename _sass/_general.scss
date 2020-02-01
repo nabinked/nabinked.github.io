@@ -93,23 +93,12 @@ ins {
 }
 
 code {
-    font-size: 0.88889rem;
     padding: 1px 3px;
-}
-
-pre {
-    background: $gray-darkest;
-    border-radius: 3px;
-    color: $gray-light;
-    font-size: 0.88889rem;
-    margin: 0 0 1.875em;
-    overflow: auto;
-    padding: 1.875em;
-    white-space: pre;
 }
 
 pre code {
     padding: 0;
+    line-height: 1.1;
 }
 
 blockquote {
@@ -645,51 +634,6 @@ img {
         -webkit-transform: translateY(0);
         transform: translateY(0);
     }
-}
-
-/* PrismJS 1.11.0
- * Syntax Highlighter
- * Modified Okaidia theme for JavaScript, CSS and HTML
- */
-code[class*="language-"],
-pre[class*="language-"] {
-    color: $gray-light;
-    background: none;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    text-align: left;
-    white-space: pre;
-    word-spacing: normal;
-    word-break: normal;
-    word-wrap: normal;
-    line-height: 1.5;
-    -moz-tab-size: 4;
-    -o-tab-size: 4;
-    tab-size: 4;
-    -webkit-hyphens: none;
-    -moz-hyphens: none;
-    -ms-hyphens: none;
-    hyphens: none;
-}
-
-/* Code blocks */
-pre[class*="language-"] {
-    padding: 1.875em;
-    margin: 0 0 1.875em;
-    overflow: auto;
-    border-radius: 3px;
-}
-
-:not(pre)>code[class*="language-"],
-pre[class*="language-"] {
-    background: $gray-darkest;
-}
-
-/* Inline code */
-:not(pre)>code[class*="language-"] {
-    padding: 1px 3px;
-    border-radius: 3px;
-    white-space: normal;
 }
 
 .token.comment,
