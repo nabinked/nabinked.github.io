@@ -20,11 +20,6 @@ author:
   description: "Software developer from Nepal, currently making his living in Sydney."
   bio: "I some how managed to self teach myself programming and I try to blog about it when I can."
 
-# Contact form setings
-email: nabin@outlook.com
-contact_page_description: "Contact me"
-thankyou_page_description: "Thank you for your message!"
-
 # Social links
 twitter: "nabinked"
 facebook:
@@ -41,10 +36,6 @@ producthunt:
 navigation:
   - text: About
     url: /about
-  # - text: Style Guide
-  #   url: /style-guide/
-  - text: Contact Me
-    url: /contact
 
 # Required Plugins
 plugins:

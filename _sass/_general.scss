@@ -765,34 +765,3 @@ pre[class*="language-"] {
 .token.entity {
     cursor: help;
 }
-
-/* Contact Form */
-
-.form-label {
-    display: block;
-    font-size: 1rem;
-    margin-bottom: 0.55556em;
-    span {
-        color: $gray;
-        font-size: 0.77778rem;
-        font-weight: normal;
-        font-style: italic;
-    }
-}
-
-.form-item {
-    margin-bottom: 30px;
-}
-
-.form-textarea {
-    min-height: 230px;
-}
-
-.contact-form {
-    background: $gray-lightest;
-    border: 1px solid $gray-lighter;
-    border-radius: 3px;
-    box-sizing: border-box;
-    margin-bottom: 3.33333em;
-    padding: 35px 30px 45px;
-}
