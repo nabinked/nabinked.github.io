@@ -51,9 +51,6 @@ paginate_path: /page:num/
 # Permalinks
 permalink: /:title
 
-# Other
-markdown: kramdown
-
 # Sass
 sass:
   sass_dir: _sass
