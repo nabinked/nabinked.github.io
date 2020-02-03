@@ -103,247 +103,247 @@ As you can see the grouping strips out the seconds part of the `DateTime` and gr
 This creates an instance of `SequenceRange`, which is a data structure to operate on sequence number ranges of a given batch of kinesis records. 
 This is what the class looks like
 ```csharp
-    /// <summary>
-    /// Data Structure to work with Sequence numbers. e.g. 90000000000000000000000098-91122343454565676789789098
-    /// Ideal for large sequence numbers. Tries to work with large sequence numbers in a memory efficient manner.
-    /// Basically tries to avoid looping over every sequence number, because <see cref="BigInteger"/> dont have any limits.
-    /// </summary>
-    public class SequenceRange : IComparable<SequenceRange>
-    {
-        /// <summary>
-        /// Can hold a string value or a stringified <see cref="SequenceRange"/>
-        /// </summary>
-        private readonly HashSet<string> _excludeList;
-        public const char FormatDelimiter = '-';
-        /// <summary>
-        /// string values must be parsable to <see cref="BigInteger"/>
-        /// </summary>
-        /// <param name="startingSeqNum"></param>
-        /// <param name="endingSeqNum"></param>
-        static SequenceRange()
-        {
-            Empty = new SequenceRange(0, 0);
-        }
+ /// <summary>
+ /// Data Structure to work with Sequence numbers. e.g. 90000000000000000000000098-91122343454565676789789098
+ /// Ideal for large sequence numbers. Tries to work with large sequence numbers in a memory efficient manner.
+ /// Basically tries to avoid looping over every sequence number, because <see cref="BigInteger"/> dont have any limits.
+ /// </summary>
+ public class SequenceRange : IComparable<SequenceRange>
+ {
+     /// <summary>
+     /// Can hold a string value or a stringified <see cref="SequenceRange"/>
+     /// </summary>
+     private readonly HashSet<string> _excludeList;
+     public const char FormatDelimiter = '-';
+     /// <summary>
+     /// string values must be parsable to <see cref="BigInteger"/>
+     /// </summary>
+     /// <param name="startingSeqNum"></param>
+     /// <param name="endingSeqNum"></param>
+     static SequenceRange()
+     {
+         Empty = new SequenceRange(0, 0);
+     }
 
-        public SequenceRange(string startingSeqNum, string endingSeqNum) : this(BigInteger.Parse(startingSeqNum), BigInteger.Parse(endingSeqNum))
-        { }
-        
-        public SequenceRange(BigInteger startingSeqNum, BigInteger endingSeqNum)
-        {
-            if (startingSeqNum > endingSeqNum)
-                throw new ArgumentOutOfRangeException(nameof(endingSeqNum) + " cannot be greater than " + nameof(startingSeqNum));
+     public SequenceRange(string startingSeqNum, string endingSeqNum) : this(BigInteger.Parse(startingSeqNum), BigInteger.Parse(endingSeqNum))
+     { }
 
-            StartingSeqNum = startingSeqNum;
-            EndingSeqNum = endingSeqNum;
-            _excludeList = new HashSet<string>();
-        }
+     public SequenceRange(BigInteger startingSeqNum, BigInteger endingSeqNum)
+     {
+         if (startingSeqNum > endingSeqNum)
+             throw new ArgumentOutOfRangeException(nameof(endingSeqNum) + " cannot be greater than " + nameof(startingSeqNum));
 
-        /// <summary>
-        /// Starting sequqnce number stored as a <see cref="BigInteger"/>
-        /// </summary>
-        /// <summary>
-        public BigInteger StartingSeqNum { get; private set; }
-        
-        /// <summary>
-        /// Ending sequqnce number stored as a <see cref="BigInteger"/>
-        /// </summary>
-        public BigInteger EndingSeqNum { get; private set; }
-        
-        /// <summary>
-        /// Add a sequence number to the exclude list
-        /// </summary>
-        /// <param name="seqNum"></param>
-        public void Exclude(string seqNum)
-        {
-            _excludeList.Add(seqNum);
-        }
-        
-        /// <summary>
-        /// Add a sequence range to the exclude list
-        /// </summary>
-        /// <param name="seqRange"></param>
-        public void Exclude(SequenceRange seqRange)
-        {
-            _excludeList.Add(seqRange.ToString());
-        }
+         StartingSeqNum = startingSeqNum;
+         EndingSeqNum = endingSeqNum;
+         _excludeList = new HashSet<string>();
+     }
 
-        /// <summary>
-        /// Excludes the current instance's sequences range
-        /// </summary>
-        public void ExcludeAll()
-        {
-            Exclude(this);
-        }
+     /// <summary>
+     /// Starting sequqnce number stored as a <see cref="BigInteger"/>
+     /// </summary>
+     /// <summary>
+     public BigInteger StartingSeqNum { get; private set; }
 
-        /// <summary>
-        /// Exclude list in comma separated string
-        /// </summary>
-        public string ExcludeList => string.Join(',', _excludeList);
+     /// <summary>
+     /// Ending sequqnce number stored as a <see cref="BigInteger"/>
+     /// </summary>
+     public BigInteger EndingSeqNum { get; private set; }
 
-        /// <summary>
-        /// Return true if there is any item on the exclude list.
-        /// </summary>
-        public bool AnyExluded => _excludeList.Count > 0;
-        
-        /// This will check if the given value is present within in the sequence range, also taking into account the exclude list.
-        /// </summary>
-        /// <param name="seqNum"></param>
-        /// <returns></returns>
-        public bool Contains(string seqNum)
-        {
-            return Contains(BigInteger.Parse(seqNum));
-        }
+     /// <summary>
+     /// Add a sequence number to the exclude list
+     /// </summary>
+     /// <param name="seqNum"></param>
+     public void Exclude(string seqNum)
+     {
+         _excludeList.Add(seqNum);
+     }
 
-        /// <summary>
-        /// This will check if the given value is present within the sequence range, also taking into account the exclude list.
-        /// </summary>
-        /// <param name="seqNum"></param>
-        /// <returns></returns>
-        public bool Contains(BigInteger seqNum)
-        {
-            // check exclude list first
-            foreach (var excludedItem in _excludeList)
-            {
-                if (TryParse(excludedItem, out var sr))
-                {
-                    //fresh instance of sequence range, which means no exclude list
-                    if (sr.Contains(seqNum))
-                        return false;
-                }
-                else
-                {
-                    // this means parsing failed which means it must be a string
-                    if (BigInteger.Parse(excludedItem).Equals(seqNum))
-                        return false;
-                }
-            }
-            return seqNum >= StartingSeqNum && seqNum <= EndingSeqNum;
-        }
+     /// <summary>
+     /// Add a sequence range to the exclude list
+     /// </summary>
+     /// <param name="seqRange"></param>
+     public void Exclude(SequenceRange seqRange)
+     {
+         _excludeList.Add(seqRange.ToString());
+     }
 
-        /// <summary>
-        /// Check if two <see cref="SequenceRange"/> values overlap
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool OverLaps(SequenceRange other)
-        {
-            if (other.StartingSeqNum >= StartingSeqNum)
-                return other.StartingSeqNum <= EndingSeqNum;
-            else
-                return other.EndingSeqNum >= StartingSeqNum;
-        }
+     /// <summary>
+     /// Excludes the current instance's sequences range
+     /// </summary>
+     public void ExcludeAll()
+     {
+         Exclude(this);
+     }
 
-        /// <summary>
-        /// Stringifies to StartingSequenceNumber-EndingSequenceNumber format
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return $"{StartingSeqNum}{FormatDelimiter}{EndingSeqNum}";
-        }
+     /// <summary>
+     /// Exclude list in comma separated string
+     /// </summary>
+     public string ExcludeList => string.Join(',', _excludeList);
 
-        /// <summary>
-        /// Parse a StartingSequenceNumber-EndingSequenceNumber format to a <see cref="SequenceRange"/> instance
-        /// </summary>
-        /// <param name="seqStr"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException">Thrown when string cannot be parsed</exception>
-        public static SequenceRange Parse(string seqStr)
-        {
-            if (TryParse(seqStr, out var sr))
-                return sr;
-            throw new ArgumentException("Could not parse sequence range");
-        }
+     /// <summary>
+     /// Return true if there is any item on the exclude list.
+     /// </summary>
+     public bool AnyExluded => _excludeList.Count > 0;
 
-        /// <summary>
-        /// Tries to parse a StartingSequenceNumber-EndingSequenceNumber format to a <see cref="SequenceRange"/> instance
-        /// </summary>
-        /// <param name="seqStr"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException">Thrown when string cannot be parsed</exception>
-        public static bool TryParse(string seqStr, [NotNullWhen(returnValue: true)] out SequenceRange? seqRange)
-        {
-            var tokens = seqStr.Split(FormatDelimiter);
-            if (tokens.Length == 2 && BigInteger.TryParse(tokens[0], out var _) && BigInteger.TryParse(tokens[1], out var _))
-            {
-                seqRange = new SequenceRange(tokens[0], tokens[1]);
-                return true;
-            };
-            seqRange = null;
-            return false;
-        }
+     /// This will check if the given value is present within in the sequence range, also taking into account the exclude list.
+     /// </summary>
+     /// <param name="seqNum"></param>
+     /// <returns></returns>
+     public bool Contains(string seqNum)
+     {
+         return Contains(BigInteger.Parse(seqNum));
+     }
 
-        /// <summary>
-        /// <see cref="IComparable{SequenceRange}"/> implementation
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public int CompareTo([AllowNull] SequenceRange other)
-        {
-            if (other is null)
-                return 1;
-            else if (StartingSeqNum == other.StartingSeqNum && EndingSeqNum == other.EndingSeqNum)
-                return 0;
-            else if (StartingSeqNum > other.EndingSeqNum)
-                return 1;
-            else if (EndingSeqNum < other.StartingSeqNum)
-                return -1;
-            else
-            {
-                //overlapping
-                if (StartingSeqNum > other.StartingSeqNum)
-                    return 2;
-                else
-                    return -2;
-            }
-        }
+     /// <summary>
+     /// This will check if the given value is present within the sequence range, also taking into account the exclude list.
+     /// </summary>
+     /// <param name="seqNum"></param>
+     /// <returns></returns>
+     public bool Contains(BigInteger seqNum)
+     {
+         // check exclude list first
+         foreach (var excludedItem in _excludeList)
+         {
+             if (TryParse(excludedItem, out var sr))
+             {
+                 //fresh instance of sequence range, which means no exclude list
+                 if (sr.Contains(seqNum))
+                     return false;
+             }
+             else
+             {
+                 // this means parsing failed which means it must be a string
+                 if (BigInteger.Parse(excludedItem).Equals(seqNum))
+                     return false;
+             }
+         }
+         return seqNum >= StartingSeqNum && seqNum <= EndingSeqNum;
+     }
 
-        public static bool operator >(SequenceRange a, SequenceRange b)
-        {
-            return a.CompareTo(b) == 1;
-        }
+     /// <summary>
+     /// Check if two <see cref="SequenceRange"/> values overlap
+     /// </summary>
+     /// <param name="other"></param>
+     /// <returns></returns>
+     public bool OverLaps(SequenceRange other)
+     {
+         if (other.StartingSeqNum >= StartingSeqNum)
+             return other.StartingSeqNum <= EndingSeqNum;
+         else
+             return other.EndingSeqNum >= StartingSeqNum;
+     }
 
-        public static bool operator <(SequenceRange a, SequenceRange b)
-        {
-            return a.CompareTo(b) == -1;
-        }
+     /// <summary>
+     /// Stringifies to StartingSequenceNumber-EndingSequenceNumber format
+     /// </summary>
+     /// <returns></returns>
+     public override string ToString()
+     {
+         return $"{StartingSeqNum}{FormatDelimiter}{EndingSeqNum}";
+     }
 
-        public static bool operator ==(SequenceRange a, SequenceRange b)
-        {
-            return a.CompareTo(b) == 0;
-        }
+     /// <summary>
+     /// Parse a StartingSequenceNumber-EndingSequenceNumber format to a <see cref="SequenceRange"/> instance
+     /// </summary>
+     /// <param name="seqStr"></param>
+     /// <returns></returns>
+     /// <exception cref="ArgumentException">Thrown when string cannot be parsed</exception>
+     public static SequenceRange Parse(string seqStr)
+     {
+         if (TryParse(seqStr, out var sr))
+             return sr;
+         throw new ArgumentException("Could not parse sequence range");
+     }
 
-        public static bool operator !=(SequenceRange a, SequenceRange b)
-        {
-            return a.CompareTo(b) != 0;
-        }
+     /// <summary>
+     /// Tries to parse a StartingSequenceNumber-EndingSequenceNumber format to a <see cref="SequenceRange"/> instance
+     /// </summary>
+     /// <param name="seqStr"></param>
+     /// <returns></returns>
+     /// <exception cref="ArgumentException">Thrown when string cannot be parsed</exception>
+     public static bool TryParse(string seqStr, [NotNullWhen(returnValue: true)] out SequenceRange? seqRange)
+     {
+         var tokens = seqStr.Split(FormatDelimiter);
+         if (tokens.Length == 2 && BigInteger.TryParse(tokens[0], out var _) && BigInteger.TryParse(tokens[1], out var _))
+         {
+             seqRange = new SequenceRange(tokens[0], tokens[1]);
+             return true;
+         };
+         seqRange = null;
+         return false;
+     }
 
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
+     /// <summary>
+     /// <see cref="IComparable{SequenceRange}"/> implementation
+     /// </summary>
+     /// <param name="other"></param>
+     /// <returns></returns>
+     public int CompareTo([AllowNull] SequenceRange other)
+     {
+         if (other is null)
+             return 1;
+         else if (StartingSeqNum == other.StartingSeqNum && EndingSeqNum == other.EndingSeqNum)
+             return 0;
+         else if (StartingSeqNum > other.EndingSeqNum)
+             return 1;
+         else if (EndingSeqNum < other.StartingSeqNum)
+             return -1;
+         else
+         {
+             //overlapping
+             if (StartingSeqNum > other.StartingSeqNum)
+                 return 2;
+             else
+                 return -2;
+         }
+     }
 
-            if (ReferenceEquals(obj, null))
-            {
-                return false;
-            }
+     public static bool operator >(SequenceRange a, SequenceRange b)
+     {
+         return a.CompareTo(b) == 1;
+     }
 
-            var seqRange = obj as SequenceRange;
-            if (seqRange is null)
-                return false;
+     public static bool operator <(SequenceRange a, SequenceRange b)
+     {
+         return a.CompareTo(b) == -1;
+     }
 
-            return CompareTo(seqRange) == 0;
-        }
+     public static bool operator ==(SequenceRange a, SequenceRange b)
+     {
+         return a.CompareTo(b) == 0;
+     }
 
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
+     public static bool operator !=(SequenceRange a, SequenceRange b)
+     {
+         return a.CompareTo(b) != 0;
+     }
 
-        public static SequenceRange Empty { get; private set; }
-    }
+     public override bool Equals(object obj)
+     {
+         if (ReferenceEquals(this, obj))
+         {
+             return true;
+         }
+
+         if (ReferenceEquals(obj, null))
+         {
+             return false;
+         }
+
+         var seqRange = obj as SequenceRange;
+         if (seqRange is null)
+             return false;
+
+         return CompareTo(seqRange) == 0;
+     }
+
+     public override int GetHashCode()
+     {
+         return ToString().GetHashCode();
+     }
+
+     public static SequenceRange Empty { get; private set; }
+ }
 ```
 
 3. In the next line,
