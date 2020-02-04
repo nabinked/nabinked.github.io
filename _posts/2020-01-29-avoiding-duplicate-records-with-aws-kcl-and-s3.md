@@ -50,7 +50,7 @@ void DeduplicateRecords(IEnumerable<Record> allRecords, Action<string, IEnumerab
         var orderedRecords = group.OrderBy(x => x.ApproximateArrivalTimestamp);
         var nonDuplicateRecords = orderedRecords.AsEnumerable();
         var sequenceRange = new SequenceRange(orderedRecords.First().SequenceNumber, orderedRecords.Last().SequenceNumber);
-        var s3EventBatchKey = new S3EventBatchKey(_staticPrefix, dateTime, sequenceRange);
+        var s3EventBatchKey = new S3EventBatchKey(_staticPrefix, _kinesisShardId, dateTime, sequenceRange);
         if (_deduplicator.IsEnabled())
         {
             var sequenceStore = new S3SequenceStore(_amazonS3, _bucketName, s3EventBatchKey);
@@ -139,13 +139,13 @@ This is what the class looks like
      }
 
      /// <summary>
-     /// Starting sequqnce number stored as a <see cref="BigInteger"/>
+     /// Starting sequence number stored as a <see cref="BigInteger"/>
      /// </summary>
      /// <summary>
      public BigInteger StartingSeqNum { get; private set; }
 
      /// <summary>
-     /// Ending sequqnce number stored as a <see cref="BigInteger"/>
+     /// Ending sequence number stored as a <see cref="BigInteger"/>
      /// </summary>
      public BigInteger EndingSeqNum { get; private set; }
 
@@ -185,7 +185,7 @@ This is what the class looks like
      /// </summary>
      public bool AnyExluded => _excludeList.Count > 0;
 
-     /// This will check if the given value is present within in the sequence range, also taking into account the exclude list.
+     /// This will check if the given value is present within the sequence range, also taking into account the exclude list.
      /// </summary>
      /// <param name="seqNum"></param>
      /// <returns></returns>
@@ -357,11 +357,11 @@ public class S3EventBatchKey
     private readonly DateTime _dateTime;
     private readonly SequenceRange _sequenceRange;
 
-    public S3EventBatchKey(string staticPrefix, DateTime dateTime, SequenceRange sequenceRange)
+    public S3EventBatchKey(string prefix, string shardId, DateTime dateTime, SequenceRange sequenceRange)
     {
         _dateTime = dateTime;
         _sequenceRange = sequenceRange;
-        Prefix = staticPrefix + dateTime.ToString(Constants.S3DateFormat) + "/";
+        Prefix = prefix + dateTime.ToString(Constants.S3DateFormat) + "/" + shardId + "-";
     }
 
     public string Prefix { get; private set; }
@@ -523,7 +523,7 @@ public class S3SequenceStore : ISequenceStore
     }
 }
 ```
-`GetLastSequenceRanges` lists the all the keys with a given prefix, in our case it will be all the events for that minute, if there are no objects saved for that minute it means it is a fresh batch of events. This method will be called multiple time, with incrementing `index` by `IDeduplicaor` untill it returns an empty list of `SequenceRange`.
+`GetLastSequenceRanges` lists the all the keys with a given prefix, in our case it will be all the events for that minute, if there are no objects saved for that minute it means it is a fresh batch of events. This method will be called multiple time, with incrementing `index` by `IDeduplicaor` untill it returns an empty list of `SequenceRange`or the returned `SequenceRange` is less than the new `SequenceRange`
 
 6. The `SequenceRange` class helps us to filter out all records that have already been processed within this batch and then save the remaining under a new key.
 7. Also it is important to disable deduplication once there are no more duplicate records found using `_deduplicator.DisableDeduplication();`.  This means that the records are fresh and no more deduplication needs to be done. When the consumer app starts, deduplication needs to be enabled by default to check if the app crashed unexpectedly the last time leaving duplicate records to be processed.
